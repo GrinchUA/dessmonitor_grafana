@@ -3,6 +3,7 @@ version: '3.2'
 services:
   monitoring:
     build: .
+    container_name: monitoring
     privileged: true
     volumes:
       - ./:/app
@@ -16,10 +17,11 @@ services:
 
   prometheus:
     image: prom/prometheus:latest
+    container_name: prometheus
     restart: always
     volumes:
       - ./prometheus:/etc/prometheus
-      - ~/prometheus_data:/prometheus
+      - ./prometheus_data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
@@ -34,10 +36,11 @@ services:
     image: grafana/grafana
     user: '472'
     restart: always
+    container_name: grafana
     environment:
       GF_INSTALL_PLUGINS: 'grafana-clock-panel,grafana-simple-json-datasource'
     volumes:
-      - ~/grafana_data:/var/lib/grafana
+      - ./grafana_data:/var/lib/grafana
       - ./grafana/provisioning/:/etc/grafana/provisioning/
     env_file:
       - ./grafana/config.monitoring
