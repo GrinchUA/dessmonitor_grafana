@@ -7,3 +7,5 @@ dist
 __pycache__
 *.egg-info
 .idea
+grafana_data
+prometheus_data
