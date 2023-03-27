@@ -23,6 +23,7 @@ class Api:
 
     def __init__(self, app):
         self.app = app
+        self.metrics = {}
 
         if 'expire' not in self.app.data:
             self.auth()
@@ -68,19 +69,21 @@ class Api:
             self.secret = r.json().get('dat', {}).get('secret')
             self.token = r.json().get('dat', {}).get('token')
             expire = r.json().get('dat', {}).get('expire')
-            expire = int(expire) - 120
+            if expire:
+                expire = int(expire) - 120
 
-            self.app.data['secret'] = self.secret
-            self.app.data['token'] = self.token
-            self.app.data['expire'] = datetime.now() + timedelta(seconds=expire)
+                self.app.data['secret'] = self.secret
+                self.app.data['token'] = self.token
+                self.app.data['expire'] = datetime.now() + timedelta(seconds=expire)
 
     def get_params(self):
-        result = self.get_request('webQueryDeviceEs', {})
+        if self.token:
+            result = self.get_request('webQueryDeviceEs', {})
 
-        if result and result.ok:
-            self.device = result.json().get('dat', {}).get('device')[0]
+            if result and result.ok:
+                self.device = result.json().get('dat', {}).get('device')[0]
 
-            self.app.data['device'] = self.device
+                self.app.data['device'] = self.device
 
 
     def get_request(self, action='queryDeviceParsEs', params={}, show_result=False):
@@ -127,6 +130,9 @@ class Api:
 
 
     def queryDeviceLastData(self):
+        if not self.token:
+            return
+
         params = {
             'i18n': 'en_US',
             "pn": self.device['pn'],
