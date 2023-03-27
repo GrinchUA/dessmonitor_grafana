@@ -1,12 +1,14 @@
 import hashlib
 import requests
 import re
+import logging
 
 from datetime import datetime, timedelta
 from urllib.parse import urlencode
 from pprint import pprint
 from monitoring.settings import settings
 
+logger = logging.getLogger("uvicorn")
 
 class Api:
     pwd = settings.password
@@ -40,6 +42,7 @@ class Api:
         return int(datetime.timestamp(d)*1000)        
 
     def auth(self):
+        logger.info("auth")
         salt = self.make_salt()
         pwd_sha = hashlib.sha1(self.pwd.encode('utf-8')).hexdigest()
         sign_str = f"{salt}{pwd_sha}&action=authSource&usr={self.usr}&company-key={self.company_key}&source={self.source}&_app_client_={self._app_client_}&_app_id_={self._app_id_}&_app_version_={self._app_version_}"
@@ -55,8 +58,6 @@ class Api:
             "_app_id_": self._app_id_,
             "_app_version_": self._app_version_
         })
-
-        print(args)
 
         url = f"http://api.dessmonitor.com/public/?{args}"
         

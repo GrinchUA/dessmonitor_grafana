@@ -13,7 +13,7 @@ services:
     env_file:
       - ./.env
     ports:
-      - "8181:8181"
+      - "127.0.0.1:8181:8181"
 
   prometheus:
     image: prom/prometheus:latest
@@ -30,7 +30,7 @@ services:
     links:
       - monitoring
     ports:
-      - 9090:9090
+      - "127.0.0.1:9090:9090"
 
   grafana:
     image: grafana/grafana
@@ -44,6 +44,7 @@ services:
       - ./grafana/provisioning/:/etc/grafana/provisioning/
     env_file:
       - ./grafana/config.monitoring
+      - ./grafana/.env
     ports:
       - 3000:3000
     depends_on:
