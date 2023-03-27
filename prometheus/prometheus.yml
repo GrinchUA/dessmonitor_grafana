@@ -16,7 +16,7 @@ scrape_configs:
     scheme: http
     static_configs:
       - targets:
-          - 'monitoring:8081'
+          - 'monitoring:8181'
   - job_name: prometheus
     static_configs:
       - targets:
