@@ -20,7 +20,7 @@ def create_metric(metrics):
 
     for metric, data in metrics.items():
         val = _check_(data['val'])
-        if val:
+        if val is not None:
             labels = ['title']
             if 'unit' in data:
                 labels.append('unit')
@@ -36,7 +36,6 @@ def create_metric(metrics):
                 g.labels(data['title'], data['unit']).set(val)
             else:
                 g.labels(data['title']).set(val)
-
         else:
             Info(
                 metric,
